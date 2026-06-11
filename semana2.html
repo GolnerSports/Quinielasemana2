@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOLNER — Quiniela Semana 2 · Mundial 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --green:#6EE000; --black:#080808;
+    --surface:#111111; --surface2:#181818;
+    --white:#F0F0F0; --gray:#888; --border:rgba(255,255,255,0.08);
+  }
+  html { scroll-behavior:smooth; }
+  body { background:var(--black); color:var(--white); font-family:'Barlow',sans-serif; overflow-x:hidden; }
+
+  /* TICKER */
+  .ticker { background:var(--green); overflow:hidden; white-space:nowrap; padding:9px 0; }
+  .ticker-track { display:inline-block; animation:ticker 24s linear infinite; }
+  .ticker-item { display:inline-block; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#080808; margin:0 2rem; }
+  .tdot { color:rgba(0,0,0,0.35); margin-right:4px; }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  /* HEADER */
+  .site-header { text-align:center; padding:2.5rem 1.5rem 2rem; position:relative; overflow:hidden; border-bottom:1px solid var(--border); }
+  .site-header::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 100% at 50% 0%,rgba(110,224,0,0.07),transparent 70%); pointer-events:none; }
+  .logo-text { font-family:'Bebas Neue',sans-serif; font-size:clamp(58px,13vw,100px); line-height:1; letter-spacing:4px; }
+  .logo-text .w { color:var(--white); }
+  .logo-text .g { color:var(--green); }
+  .logo-sub { font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:600; letter-spacing:5px; color:var(--gray); text-transform:uppercase; margin-top:4px; }
+  .week-pill { display:inline-block; margin-top:1rem; background:transparent; border:1px solid rgba(110,224,0,0.4); color:var(--green); font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; padding:7px 20px; border-radius:100px; }
+
+  /* BLOCKS */
+  .block { max-width:860px; margin:0 auto; padding:2.2rem 1.5rem; }
+  .sec-label { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:4px; color:var(--green); text-transform:uppercase; margin-bottom:.6rem; display:flex; align-items:center; gap:8px; }
+  .sec-label::after { content:''; flex:1; height:1px; background:rgba(110,224,0,0.2); }
+  .sec-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(26px,5vw,46px); line-height:1; margin-bottom:1.4rem; }
+  hr.div { border:none; border-top:1px solid var(--border); margin:0; }
+
+  /* REGISTRO */
+  .reg-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .field-group { display:flex; flex-direction:column; gap:5px; }
+  .field-label { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:3px; color:var(--gray); text-transform:uppercase; }
+  .field-input { background:var(--surface2); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:13px 15px; color:var(--white); font-family:'Barlow',sans-serif; font-size:15px; outline:none; transition:border-color .2s; width:100%; }
+  .field-input:focus { border-color:var(--green); }
+  .field-input::placeholder { color:rgba(255,255,255,0.2); }
+  .field-input.err { border-color:rgba(220,50,50,0.6) !important; background:rgba(220,50,50,0.06); }
+  @media(max-width:540px){ .reg-grid{ grid-template-columns:1fr; } }
+
+  /* RULES */
+  .rules-box { background:var(--surface); border:1px solid rgba(110,224,0,0.2); border-radius:8px; padding:1.4rem 1.5rem; }
+  .rules-pts-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.2rem; }
+  .rule-card { background:var(--surface2); border-radius:6px; padding:1rem 1.2rem; display:flex; align-items:center; gap:12px; }
+  .rule-icon { font-size:26px; flex-shrink:0; }
+  .rule-num { font-family:'Bebas Neue',sans-serif; font-size:38px; color:var(--green); line-height:1; }
+  .rule-num-lbl { font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; color:var(--gray); text-transform:uppercase; }
+  .rule-desc { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:600; color:var(--white); line-height:1.4; }
+  .rules-text { font-size:14px; color:var(--gray); line-height:1.75; }
+  .rules-text strong { color:var(--white); }
+  @media(max-width:480px){ .rules-pts-row{ grid-template-columns:1fr; } }
+
+  /* GROUPS */
+  .gtabs { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:1.2rem; }
+  .gtab { background:var(--surface2); border:1px solid var(--border); border-radius:4px; padding:6px 13px; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:1px; color:var(--gray); cursor:pointer; transition:all .15s; text-transform:uppercase; }
+  .gtab:hover { border-color:rgba(110,224,0,0.3); color:var(--white); }
+  .gtab.on { background:rgba(110,224,0,0.1); border-color:var(--green); color:var(--green); }
+  .gpanel { display:none; }
+  .gpanel.on { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:8px; }
+  .gcard { background:var(--surface2); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+  .gcard-hd { background:rgba(110,224,0,0.09); border-bottom:1px solid rgba(110,224,0,0.18); padding:7px 13px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:2px; color:var(--green); }
+  .gteam { display:flex; align-items:center; gap:9px; padding:8px 13px; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .gteam:last-child { border-bottom:none; }
+  .gflag { font-size:19px; line-height:1; flex-shrink:0; }
+  .gname { font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; letter-spacing:.4px; color:var(--white); }
+
+  /* PROGRESS */
+  .prog-wrap { background:var(--surface); border-radius:7px; padding:.9rem 1.3rem; margin-bottom:1.3rem; }
+  .prog-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+  .prog-lbl { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:3px; color:var(--gray); text-transform:uppercase; }
+  .prog-num { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--green); }
+  .prog-bar { height:5px; background:rgba(255,255,255,0.07); border-radius:100px; overflow:hidden; }
+  .prog-fill { height:100%; background:var(--green); border-radius:100px; transition:width .35s ease; width:0%; }
+
+  /* DAY LABELS */
+  .day-lbl { font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:4px; color:var(--green); text-transform:uppercase; padding:10px 0 6px; border-bottom:1px solid rgba(110,224,0,0.14); margin-bottom:8px; margin-top:1.8rem; display:flex; align-items:center; gap:7px; }
+  .day-lbl:first-of-type { margin-top:0; }
+
+  /* MATCH CARD */
+  .mc { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:.9rem 1.1rem; margin-bottom:6px; transition:border-color .2s, background .2s; }
+  .mc:hover { border-color:rgba(110,224,0,0.2); background:var(--surface2); }
+  .mc.picked { border-color:rgba(110,224,0,0.32); }
+  .mc-top { display:flex; align-items:center; gap:8px; }
+  .mc-team { flex:1; display:flex; align-items:center; gap:7px; font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:700; letter-spacing:.4px; }
+  .mc-team.away { justify-content:flex-end; }
+  .mc-flag { font-size:20px; line-height:1; flex-shrink:0; }
+  .mc-mid { display:flex; flex-direction:column; align-items:center; gap:4px; min-width:96px; flex-shrink:0; }
+  .mc-btns { display:flex; gap:3px; }
+  .mbtn { width:29px; height:29px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:3px; font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; color:var(--gray); cursor:pointer; transition:all .13s; display:flex; align-items:center; justify-content:center; user-select:none; }
+  .mbtn:hover { background:rgba(110,224,0,0.1); border-color:rgba(110,224,0,0.3); color:var(--white); }
+  .mbtn.on { background:var(--green); border-color:var(--green); color:#080808; }
+  .mc-info { font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:1.5px; color:rgba(255,255,255,0.28); text-transform:uppercase; }
+
+  /* SCORE */
+  .mc-score { display:flex; align-items:center; gap:8px; margin-top:9px; padding-top:9px; border-top:1px solid rgba(255,255,255,0.05); flex-wrap:wrap; }
+  .sc-lbl { font-family:'Barlow Condensed',sans-serif; font-size:11px; letter-spacing:2px; color:rgba(110,224,0,0.55); text-transform:uppercase; font-weight:700; flex-shrink:0; }
+  .sc-inputs { display:flex; align-items:center; gap:7px; }
+  .sc-field { width:48px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:6px 8px; color:var(--white); font-family:'Bebas Neue',sans-serif; font-size:20px; text-align:center; outline:none; transition:border-color .2s; }
+  .sc-field:focus { border-color:var(--green); }
+  .sc-dash { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--gray); }
+  .sc-hint { font-family:'Barlow Condensed',sans-serif; font-size:11px; color:rgba(255,255,255,0.18); letter-spacing:1px; }
+  .sc-field::-webkit-outer-spin-button,.sc-field::-webkit-inner-spin-button{-webkit-appearance:none;}
+  .sc-field[type=number]{-moz-appearance:textfield;}
+
+  @media(max-width:520px){
+    .mc-team{font-size:13px;} .mc-flag{font-size:17px;} .mc-mid{min-width:80px;}
+    .sc-field{width:42px;font-size:18px;}
+  }
+
+  /* PRIZES */
+  .prizes-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:1rem; }
+  .pcard { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.4rem; text-align:center; position:relative; overflow:hidden; transition:border-color .2s,transform .2s; }
+  .pcard:hover { transform:translateY(-3px); border-color:rgba(110,224,0,0.22); }
+  .pcard.feat { border-color:var(--green); background:linear-gradient(160deg,rgba(110,224,0,0.07),transparent 60%); padding-top:3rem; }
+  .pcard.feat::before { content:'🥇 PRIMER LUGAR'; position:absolute; top:0; left:0; right:0; background:var(--green); color:#080808; font-family:'Barlow Condensed',sans-serif; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px; text-align:center; }
+  .p-emoji { font-size:38px; display:block; margin-bottom:9px; line-height:1; }
+  .p-place { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:3px; color:var(--green); text-transform:uppercase; margin-bottom:5px; }
+  .p-title { font-family:'Bebas Neue',sans-serif; font-size:26px; line-height:1.1; color:var(--white); margin-bottom:6px; }
+  .p-sub { font-size:13px; color:var(--gray); line-height:1.5; }
+
+  /* WA BUTTON */
+  .wa-wrap { text-align:center; padding:2.5rem 1.5rem 3.5rem; }
+  .wa-btn { display:inline-flex; align-items:center; gap:13px; background:#25D366; color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:17px 38px; border-radius:6px; border:none; cursor:pointer; transition:background .2s,transform .15s; }
+  .wa-btn:hover { background:#1ebe5a; transform:translateY(-2px); }
+  .wa-note { margin-top:9px; font-family:'Barlow Condensed',sans-serif; font-size:12px; letter-spacing:1.5px; color:var(--gray); text-transform:uppercase; }
+
+  /* FOOTER */
+  footer { background:#060606; border-top:1px solid rgba(255,255,255,0.05); padding:2.2rem 1.5rem; text-align:center; }
+  .f-logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:4px; }
+  .f-logo .w{color:var(--white);} .f-logo .g{color:var(--green);}
+  .f-copy { font-size:12px; color:rgba(255,255,255,0.15); margin-top:6px; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e1e1e; border:1px solid rgba(110,224,0,0.3); color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:14px; letter-spacing:1px; padding:13px 26px; border-radius:6px; z-index:999; opacity:0; transition:opacity .3s; pointer-events:none; text-align:center; max-width:90vw; }
+  .toast.show{opacity:1;}
+  @keyframes deadlinePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.6);}}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="tdot">●</span>Mundial 2026</span>
+    <span class="ticker-item"><span class="tdot">●</span>Semana 2 · 18–23 Junio</span>
+    <span class="ticker-item"><span class="tdot">●</span>24 Partidos</span>
+    <span class="ticker-item"><span class="tdot">●</span>Predicciones · Rankings · Premios</span>
+    <span class="ticker-item"><span class="tdot">●</span>México vs Corea del Sur · Semana 2</span>
+    <span class="ticker-item"><span class="tdot">●</span>48 Equipos · 12 Grupos</span>
+    <span class="ticker-item"><span class="tdot">●</span>Mundial 2026</span>
+    <span class="ticker-item"><span class="tdot">●</span>Semana 2 · 18–23 Junio</span>
+    <span class="ticker-item"><span class="tdot">●</span>24 Partidos</span>
+    <span class="ticker-item"><span class="tdot">●</span>Predicciones · Rankings · Premios</span>
+    <span class="ticker-item"><span class="tdot">●</span>México vs Corea del Sur · Semana 2</span>
+    <span class="ticker-item"><span class="tdot">●</span>48 Equipos · 12 Grupos</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo-text"><span class="w">GOL</span><span class="g">NER</span></div>
+  <div class="logo-sub">Predicciones · Rankings · Premios</div>
+  <div class="week-pill">⚡ Semana 2 — Mundial 2026 · 18–23 Junio · 24 partidos</div>
+  <div style="display:inline-flex;align-items:center;gap:8px;margin-top:1rem;background:rgba(220,50,50,0.1);border:1px solid rgba(220,50,50,0.35);border-radius:100px;padding:8px 22px;">
+    <span style="width:7px;height:7px;border-radius:50%;background:rgba(255,80,80,0.9);animation:deadlinePulse 1.3s ease-in-out infinite;flex-shrink:0;"></span>
+    <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;color:rgba(255,110,110,0.95);text-transform:uppercase;">Fecha límite de entrega: 17 de Junio 2026</span>
+  </div>
+</header>
+
+<!-- 1. REGISTRO -->
+<div class="block">
+  <div class="sec-label">Registro del participante</div>
+  <div class="reg-grid">
+    <div class="field-group">
+      <label class="field-label" for="fnombre">Nombre(s)</label>
+      <input class="field-input" type="text" id="fnombre" placeholder="Tu nombre" autocomplete="given-name">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="fapellido">Apellido(s)</label>
+      <input class="field-input" type="text" id="fapellido" placeholder="Tu apellido" autocomplete="family-name">
+    </div>
+  </div>
+  <div class="reg-grid" style="margin-top:1rem">
+    <div class="field-group">
+      <label class="field-label" for="ftel">Número de teléfono</label>
+      <input class="field-input" type="tel" id="ftel" placeholder="55 1234 5678" autocomplete="tel">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="fid" style="display:flex;align-items:center;gap:6px;">
+        <span style="background:var(--green);color:#080808;font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1.5px;padding:2px 7px;border-radius:2px;flex-shrink:0;">ID</span>
+        ID Golner Personal
+      </label>
+      <input class="field-input" type="text" id="fid" placeholder="Tu ID Golner" style="border-color:rgba(110,224,0,0.25);">
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- 2. REGLAS -->
+<div class="block">
+  <div class="sec-label">Reglas del juego</div>
+  <div class="rules-box">
+    <div class="rules-pts-row">
+      <div class="rule-card">
+        <span class="rule-icon">⚽</span>
+        <div>
+          <div class="rule-num">3</div>
+          <div class="rule-num-lbl">puntos</div>
+          <div class="rule-desc">Partido acertado<br>(ganador o empate)</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">🎯</span>
+        <div>
+          <div class="rule-num">5</div>
+          <div class="rule-num-lbl">puntos</div>
+          <div class="rule-desc">Resultado correcto<br>(marcador exacto)</div>
+        </div>
+      </div>
+    </div>
+    <div class="rules-text">
+      <strong>Fase de grupos (72 partidos):</strong> Los participantes con más puntos al finalizar pasan a los <strong>Dieciseisavos de final</strong>.<br>
+      Después los mejores avanzan a <strong>Cuartos</strong>, luego <strong>Semifinal</strong> y finalmente la <strong>Gran Final</strong>.<br>
+      El participante que acumule más puntos en total se lleva el <strong style="color:var(--green)">Primer Lugar 🏆</strong>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- 3. GRUPOS -->
+<div class="block">
+  <div class="sec-label">Grupos del mundial 2026</div>
+  <div class="sec-title">48 Equipos · 12 Grupos</div>
+
+  <div class="gtabs" id="gtabs">
+    <div class="gtab on" data-g="A">Grupo A</div>
+    <div class="gtab" data-g="B">Grupo B</div>
+    <div class="gtab" data-g="C">Grupo C</div>
+    <div class="gtab" data-g="D">Grupo D</div>
+    <div class="gtab" data-g="E">Grupo E</div>
+    <div class="gtab" data-g="F">Grupo F</div>
+    <div class="gtab" data-g="G">Grupo G</div>
+    <div class="gtab" data-g="H">Grupo H</div>
+    <div class="gtab" data-g="I">Grupo I</div>
+    <div class="gtab" data-g="J">Grupo J</div>
+    <div class="gtab" data-g="K">Grupo K</div>
+    <div class="gtab" data-g="L">Grupo L</div>
+  </div>
+
+  <div id="gpanels">
+    <div class="gpanel on" data-p="A"><div class="gcard"><div class="gcard-hd">Grupo A</div>
+      <div class="gteam"><span class="gflag">🇲🇽</span><span class="gname">México</span></div>
+      <div class="gteam"><span class="gflag">🇿🇦</span><span class="gname">Sudáfrica</span></div>
+      <div class="gteam"><span class="gflag">🇰🇷</span><span class="gname">Corea</span></div>
+      <div class="gteam"><span class="gflag">🇨🇿</span><span class="gname">Chequia</span></div>
+    </div></div>
+    <div class="gpanel" data-p="B"><div class="gcard"><div class="gcard-hd">Grupo B</div>
+      <div class="gteam"><span class="gflag">🇨🇦</span><span class="gname">Canadá</span></div>
+      <div class="gteam"><span class="gflag">🇧🇦</span><span class="gname">Bosnia</span></div>
+      <div class="gteam"><span class="gflag">🇶🇦</span><span class="gname">Qatar</span></div>
+      <div class="gteam"><span class="gflag">🇨🇭</span><span class="gname">Suiza</span></div>
+    </div></div>
+    <div class="gpanel" data-p="C"><div class="gcard"><div class="gcard-hd">Grupo C</div>
+      <div class="gteam"><span class="gflag">🇧🇷</span><span class="gname">Brasil</span></div>
+      <div class="gteam"><span class="gflag">🇲🇦</span><span class="gname">Marruecos</span></div>
+      <div class="gteam"><span class="gflag">🇭🇹</span><span class="gname">Haití</span></div>
+      <div class="gteam"><span class="gflag">🏴󠁧󠁢󠁳󠁣󠁴󠁿</span><span class="gname">Escocia</span></div>
+    </div></div>
+    <div class="gpanel" data-p="D"><div class="gcard"><div class="gcard-hd">Grupo D</div>
+      <div class="gteam"><span class="gflag">🇺🇸</span><span class="gname">EE.UU.</span></div>
+      <div class="gteam"><span class="gflag">🇵🇾</span><span class="gname">Paraguay</span></div>
+      <div class="gteam"><span class="gflag">🇦🇺</span><span class="gname">Australia</span></div>
+      <div class="gteam"><span class="gflag">🇹🇷</span><span class="gname">Turquía</span></div>
+    </div></div>
+    <div class="gpanel" data-p="E"><div class="gcard"><div class="gcard-hd">Grupo E</div>
+      <div class="gteam"><span class="gflag">🇩🇪</span><span class="gname">Alemania</span></div>
+      <div class="gteam"><span class="gflag">🇨🇼</span><span class="gname">Curazao</span></div>
+      <div class="gteam"><span class="gflag">🇨🇮</span><span class="gname">C. de Marfil</span></div>
+      <div class="gteam"><span class="gflag">🇪🇨</span><span class="gname">Ecuador</span></div>
+    </div></div>
+    <div class="gpanel" data-p="F"><div class="gcard"><div class="gcard-hd">Grupo F</div>
+      <div class="gteam"><span class="gflag">🇳🇱</span><span class="gname">Países Bajos</span></div>
+      <div class="gteam"><span class="gflag">🇯🇵</span><span class="gname">Japón</span></div>
+      <div class="gteam"><span class="gflag">🇸🇪</span><span class="gname">Suecia</span></div>
+      <div class="gteam"><span class="gflag">🇹🇳</span><span class="gname">Túnez</span></div>
+    </div></div>
+    <div class="gpanel" data-p="G"><div class="gcard"><div class="gcard-hd">Grupo G</div>
+      <div class="gteam"><span class="gflag">🇧🇪</span><span class="gname">Bélgica</span></div>
+      <div class="gteam"><span class="gflag">🇪🇬</span><span class="gname">Egipto</span></div>
+      <div class="gteam"><span class="gflag">🇮🇷</span><span class="gname">Irán</span></div>
+      <div class="gteam"><span class="gflag">🇳🇿</span><span class="gname">N. Zelanda</span></div>
+    </div></div>
+    <div class="gpanel" data-p="H"><div class="gcard"><div class="gcard-hd">Grupo H</div>
+      <div class="gteam"><span class="gflag">🇪🇸</span><span class="gname">España</span></div>
+      <div class="gteam"><span class="gflag">🇨🇻</span><span class="gname">Cabo Verde</span></div>
+      <div class="gteam"><span class="gflag">🇸🇦</span><span class="gname">Arabia S.</span></div>
+      <div class="gteam"><span class="gflag">🇺🇾</span><span class="gname">Uruguay</span></div>
+    </div></div>
+    <div class="gpanel" data-p="I"><div class="gcard"><div class="gcard-hd">Grupo I</div>
+      <div class="gteam"><span class="gflag">🇫🇷</span><span class="gname">Francia</span></div>
+      <div class="gteam"><span class="gflag">🇸🇳</span><span class="gname">Senegal</span></div>
+      <div class="gteam"><span class="gflag">🇮🇶</span><span class="gname">Irak</span></div>
+      <div class="gteam"><span class="gflag">🇳🇴</span><span class="gname">Noruega</span></div>
+    </div></div>
+    <div class="gpanel" data-p="J"><div class="gcard"><div class="gcard-hd">Grupo J</div>
+      <div class="gteam"><span class="gflag">🇦🇷</span><span class="gname">Argentina</span></div>
+      <div class="gteam"><span class="gflag">🇩🇿</span><span class="gname">Argelia</span></div>
+      <div class="gteam"><span class="gflag">🇦🇹</span><span class="gname">Austria</span></div>
+      <div class="gteam"><span class="gflag">🇯🇴</span><span class="gname">Jordania</span></div>
+    </div></div>
+    <div class="gpanel" data-p="K"><div class="gcard"><div class="gcard-hd">Grupo K</div>
+      <div class="gteam"><span class="gflag">🇵🇹</span><span class="gname">Portugal</span></div>
+      <div class="gteam"><span class="gflag">🇨🇩</span><span class="gname">RD Congo</span></div>
+      <div class="gteam"><span class="gflag">🇺🇿</span><span class="gname">Uzbekistán</span></div>
+      <div class="gteam"><span class="gflag">🇨🇴</span><span class="gname">Colombia</span></div>
+    </div></div>
+    <div class="gpanel" data-p="L"><div class="gcard"><div class="gcard-hd">Grupo L</div>
+      <div class="gteam"><span class="gflag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span><span class="gname">Inglaterra</span></div>
+      <div class="gteam"><span class="gflag">🇭🇷</span><span class="gname">Croacia</span></div>
+      <div class="gteam"><span class="gflag">🇬🇭</span><span class="gname">Ghana</span></div>
+      <div class="gteam"><span class="gflag">🇵🇦</span><span class="gname">Panamá</span></div>
+    </div></div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- 4. QUINIELA -->
+<div class="block">
+  <div class="sec-label">Selecciona tu resultado</div>
+  <div class="sec-title">Semana 2 — Mundial 2026</div>
+
+  <div class="prog-wrap">
+    <div class="prog-row">
+      <span class="prog-lbl">Progreso</span>
+      <span class="prog-num" id="pCount">0 / 24</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="pFill"></div></div>
+  </div>
+
+  <div id="matches">
+
+    <!-- JUE 18 -->
+    <div class="day-lbl">⚽ Jueves 18 Jun 2026</div>
+
+    <div class="mc" data-id="1"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇨🇿</span>Rep. Checa</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo A · 10:00 a.m.</div></div>
+      <div class="mc-team away">Sudáfrica<span class="mc-flag">🇿🇦</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="2"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇨🇭</span>Suiza</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo B · 1:00 p.m.</div></div>
+      <div class="mc-team away">Bosnia Herz.<span class="mc-flag">🇧🇦</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="3"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇨🇦</span>Canadá</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo B · 4:00 p.m.</div></div>
+      <div class="mc-team away">Qatar<span class="mc-flag">🇶🇦</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="4"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇲🇽</span>México</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo A · 7:00 p.m.</div></div>
+      <div class="mc-team away">Corea del Sur<span class="mc-flag">🇰🇷</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <!-- VIE 19 -->
+    <div class="day-lbl">⚽ Viernes 19 Jun 2026</div>
+
+    <div class="mc" data-id="5"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇺🇸</span>Estados Unidos</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo D · 1:00 p.m.</div></div>
+      <div class="mc-team away">Australia<span class="mc-flag">🇦🇺</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="6"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🏴󠁧󠁢󠁳󠁣󠁴󠁿</span>Escocia</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo C · 4:00 p.m.</div></div>
+      <div class="mc-team away">Marruecos<span class="mc-flag">🇲🇦</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="7"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇧🇷</span>Brasil</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo C · 6:30 p.m.</div></div>
+      <div class="mc-team away">Haití<span class="mc-flag">🇭🇹</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="8"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇹🇷</span>Turquía</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo D · 9:00 p.m.</div></div>
+      <div class="mc-team away">Paraguay<span class="mc-flag">🇵🇾</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <!-- SÁB 20 -->
+    <div class="day-lbl">⚽ Sábado 20 Jun 2026</div>
+
+    <div class="mc" data-id="9"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇳🇱</span>Países Bajos</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo F · 11:00 a.m.</div></div>
+      <div class="mc-team away">Suecia<span class="mc-flag">🇸🇪</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="10"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇩🇪</span>Alemania</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo E · 2:00 p.m.</div></div>
+      <div class="mc-team away">Costa de Marfil<span class="mc-flag">🇨🇮</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="11"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇪🇨</span>Ecuador</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo E · 6:00 p.m.</div></div>
+      <div class="mc-team away">Curazao<span class="mc-flag">🇨🇼</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="12"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇹🇳</span>Túnez</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo F · 10:00 p.m.</div></div>
+      <div class="mc-team away">Japón<span class="mc-flag">🇯🇵</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <!-- DOM 21 -->
+    <div class="day-lbl">⚽ Domingo 21 Jun 2026</div>
+
+    <div class="mc" data-id="13"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇪🇸</span>España</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo H · 10:00 a.m.</div></div>
+      <div class="mc-team away">Arabia Saudita<span class="mc-flag">🇸🇦</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="14"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇧🇪</span>Bélgica</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo G · 1:00 p.m.</div></div>
+      <div class="mc-team away">Irán<span class="mc-flag">🇮🇷</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="15"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇺🇾</span>Uruguay</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo H · 4:00 p.m.</div></div>
+      <div class="mc-team away">Cabo Verde<span class="mc-flag">🇨🇻</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="16"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇳🇿</span>Nueva Zelanda</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo G · 7:00 p.m.</div></div>
+      <div class="mc-team away">Egipto<span class="mc-flag">🇪🇬</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <!-- LUN 22 -->
+    <div class="day-lbl">⚽ Lunes 22 Jun 2026</div>
+
+    <div class="mc" data-id="17"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇦🇷</span>Argentina</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo J · 11:00 a.m.</div></div>
+      <div class="mc-team away">Austria<span class="mc-flag">🇦🇹</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="18"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇫🇷</span>Francia</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo I · 3:00 p.m.</div></div>
+      <div class="mc-team away">Irak<span class="mc-flag">🇮🇶</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="19"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇳🇴</span>Noruega</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo I · 6:00 p.m.</div></div>
+      <div class="mc-team away">Senegal<span class="mc-flag">🇸🇳</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="20"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇯🇴</span>Jordania</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo J · 9:00 p.m.</div></div>
+      <div class="mc-team away">Argelia<span class="mc-flag">🇩🇿</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <!-- MAR 23 -->
+    <div class="day-lbl">⚽ Martes 23 Jun 2026</div>
+
+    <div class="mc" data-id="21"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇵🇹</span>Portugal</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo K · 11:00 a.m.</div></div>
+      <div class="mc-team away">Uzbekistán<span class="mc-flag">🇺🇿</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="22"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>Inglaterra</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo L · 2:00 p.m.</div></div>
+      <div class="mc-team away">Ghana<span class="mc-flag">🇬🇭</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="23"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇵🇦</span>Panamá</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo L · 5:00 p.m.</div></div>
+      <div class="mc-team away">Croacia<span class="mc-flag">🇭🇷</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+    <div class="mc" data-id="24"><div class="mc-top">
+      <div class="mc-team"><span class="mc-flag">🇨🇴</span>Colombia</div>
+      <div class="mc-mid"><div class="mc-btns"><div class="mbtn" data-v="1">1</div><div class="mbtn" data-v="X">X</div><div class="mbtn" data-v="2">2</div></div><div class="mc-info">Grupo K · 8:00 p.m.</div></div>
+      <div class="mc-team away">RD Congo<span class="mc-flag">🇨🇩</span></div>
+    </div><div class="mc-score"><span class="sc-lbl">Marcador:</span><div class="sc-inputs"><input class="sc-field" type="number" min="0" max="20" placeholder="0"><span class="sc-dash">–</span><input class="sc-field" type="number" min="0" max="20" placeholder="0"></div><span class="sc-hint">opcional · +5 pts si aciertas</span></div></div>
+
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- 5. PREMIOS -->
+<div class="block">
+  <div class="sec-label">Premios de la quiniela</div>
+  <div class="sec-title">El que más sabe,<br>más gana 🏆</div>
+  <div class="prizes-grid">
+
+    <!-- 2do LUGAR — Wok & Wings -->
+    <div class="pcard" style="border-color:rgba(192,192,192,0.25); display:flex; flex-direction:column;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div>
+          <div class="p-place">🥈 Segundo Lugar</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--gray);letter-spacing:1px;margin-top:2px;">Premio especial</div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:18px 14px;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;min-height:110px;">
+        <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;height:auto;">
+          <text x="8" y="52" font-family="Impact,Arial Black,sans-serif" font-size="48" font-weight="900" fill="#E8001D" letter-spacing="2">WOK</text>
+          <g transform="translate(148,8)">
+            <rect x="6" y="18" width="26" height="24" rx="2" fill="none" stroke="#1a1a1a" stroke-width="2.2"/>
+            <line x1="6" y1="24" x2="32" y2="24" stroke="#1a1a1a" stroke-width="2"/>
+            <line x1="19" y1="10" x2="14" y2="18" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="19" y1="10" x2="24" y2="18" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="22" y1="7" x2="22" y2="2" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="24" y1="9" x2="26" y2="5" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M0,28 C-8,22 -12,16 -6,12 C-2,10 2,14 6,20" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+            <path d="M0,28 C-6,20 -14,18 -10,12 C-7,8 -2,12 2,18" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+            <path d="M38,28 C46,22 50,16 44,12 C40,10 36,14 32,20" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+            <path d="M38,28 C44,20 52,18 48,12 C45,8 40,12 36,18" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          </g>
+          <text x="10" y="95" font-family="Georgia,serif" font-size="28" font-weight="700" fill="#1a1a1a">&amp;</text>
+          <text x="38" y="98" font-family="Impact,Arial Black,sans-serif" font-size="44" font-weight="900" fill="#F57C00" letter-spacing="1">WINGS</text>
+        </svg>
+      </div>
+      <div class="p-sub" style="flex:1;">Una cena para celebrar en el restaurante Wok &amp; Wings</div>
+    </div>
+
+    <!-- 1er LUGAR -->
+    <div class="pcard feat" style="display:flex;flex-direction:column;">
+      <div style="text-align:center;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="font-size:52px;line-height:1;margin-bottom:10px;">💰</div>
+        <div class="p-place" style="font-size:12px;">Primer Lugar</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;color:var(--white);margin:8px 0 4px;letter-spacing:2px;">Monto<br>Acumulado</div>
+        <div style="display:inline-block;background:rgba(110,224,0,0.12);border:1px solid rgba(110,224,0,0.4);border-radius:4px;padding:6px 16px;margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;color:var(--green);">💵 En efectivo · Garantizado</div>
+      </div>
+      <div class="p-sub" style="margin-top:14px;">Todo el dinero acumulado de la quiniela va para el ganador</div>
+    </div>
+
+    <!-- 3er LUGAR — Innovasport -->
+    <div class="pcard" style="border-color:rgba(205,127,50,0.25); display:flex; flex-direction:column;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div>
+          <div class="p-place">🥉 Tercer Lugar</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--gray);letter-spacing:1px;margin-top:2px;">Premio especial</div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:16px 14px;margin-bottom:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:110px;gap:10px;">
+        <img src="data:image/jpeg;base64,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" alt="Innovasport" style="width:100%;max-width:180px;height:auto;display:block;">
+      </div>
+      <div style="background:linear-gradient(135deg,#003D99,#0066CC);border-radius:8px;padding:12px;text-align:center;margin-bottom:1rem;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:#fff;line-height:1;letter-spacing:2px;">$1,000</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;color:rgba(255,255,255,0.7);text-transform:uppercase;margin-top:2px;">Pesos en cupón</div>
+      </div>
+      <div class="p-sub" style="flex:1;">Cupón de $1,000 pesos para canjear en cualquier tienda Innovasport</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 6. WHATSAPP -->
+<div class="wa-wrap">
+  <button class="wa-btn" onclick="sendWA()">
+    <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+      <path d="M14 4C8.477 4 4 8.477 4 14c0 1.87.507 3.619 1.393 5.118L4 24l5.025-1.371A9.95 9.95 0 0014 24c5.523 0 10-4.477 10-10S19.523 4 14 4zm4.956 13.978c-.207.582-1.207 1.113-1.647 1.156-.44.043-.45.334-2.837-.593-2.838-1.102-4.614-3.987-4.754-4.172-.14-.184-1.14-1.517-1.14-2.895s.721-2.05.977-2.33c.256-.28.558-.35.744-.35.187 0 .373.002.535.01.172.007.404-.065.633.483.232.555.787 1.916.856 2.055.07.14.116.303.023.487-.093.184-.14.299-.279.46-.14.16-.294.358-.42.48-.14.14-.286.29-.123.569.163.279.725 1.197 1.556 1.937 1.069.953 1.97 1.248 2.25 1.388.279.14.441.116.605-.07.163-.186.698-.814.884-1.093.186-.279.372-.232.628-.14.256.093 1.627.768 1.906.908.279.14.465.21.535.325.07.116.07.672-.136 1.255z" fill="white"/>
+    </svg>
+    Enviar resultados por WhatsApp
+  </button>
+  <div class="wa-note">Se enviará al número oficial de GOLNER</div>
+</div>
+
+<footer>
+  <div class="f-logo"><span class="w">GOL</span><span class="g">NER</span></div>
+  <div class="f-copy">© 2026 GOLNER · Predicciones · Rankings · Premios · Mundial 2026</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const picks = {};
+const TOTAL = 24;
+
+const mdata = [
+  {id:'1',  home:'Rep. Checa',      away:'Sudáfrica',        day:'Jue 18 Jun', g:'A'},
+  {id:'2',  home:'Suiza',           away:'Bosnia Herz.',     day:'Jue 18 Jun', g:'B'},
+  {id:'3',  home:'Canadá',          away:'Qatar',            day:'Jue 18 Jun', g:'B'},
+  {id:'4',  home:'México',          away:'Corea del Sur',    day:'Jue 18 Jun', g:'A'},
+  {id:'5',  home:'Estados Unidos',  away:'Australia',        day:'Vie 19 Jun', g:'D'},
+  {id:'6',  home:'Escocia',         away:'Marruecos',        day:'Vie 19 Jun', g:'C'},
+  {id:'7',  home:'Brasil',          away:'Haití',            day:'Vie 19 Jun', g:'C'},
+  {id:'8',  home:'Turquía',         away:'Paraguay',         day:'Vie 19 Jun', g:'D'},
+  {id:'9',  home:'Países Bajos',    away:'Suecia',           day:'Sáb 20 Jun', g:'F'},
+  {id:'10', home:'Alemania',        away:'Costa de Marfil',  day:'Sáb 20 Jun', g:'E'},
+  {id:'11', home:'Ecuador',         away:'Curazao',          day:'Sáb 20 Jun', g:'E'},
+  {id:'12', home:'Túnez',           away:'Japón',            day:'Sáb 20 Jun', g:'F'},
+  {id:'13', home:'España',          away:'Arabia Saudita',   day:'Dom 21 Jun', g:'H'},
+  {id:'14', home:'Bélgica',         away:'Irán',             day:'Dom 21 Jun', g:'G'},
+  {id:'15', home:'Uruguay',         away:'Cabo Verde',       day:'Dom 21 Jun', g:'H'},
+  {id:'16', home:'Nueva Zelanda',   away:'Egipto',           day:'Dom 21 Jun', g:'G'},
+  {id:'17', home:'Argentina',       away:'Austria',          day:'Lun 22 Jun', g:'J'},
+  {id:'18', home:'Francia',         away:'Irak',             day:'Lun 22 Jun', g:'I'},
+  {id:'19', home:'Noruega',         away:'Senegal',          day:'Lun 22 Jun', g:'I'},
+  {id:'20', home:'Jordania',        away:'Argelia',          day:'Lun 22 Jun', g:'J'},
+  {id:'21', home:'Portugal',        away:'Uzbekistán',       day:'Mar 23 Jun', g:'K'},
+  {id:'22', home:'Inglaterra',      away:'Ghana',            day:'Mar 23 Jun', g:'L'},
+  {id:'23', home:'Panamá',          away:'Croacia',          day:'Mar 23 Jun', g:'L'},
+  {id:'24', home:'Colombia',        away:'RD Congo',         day:'Mar 23 Jun', g:'K'},
+];
+
+/* TABS */
+document.getElementById('gtabs').addEventListener('click', e => {
+  const t = e.target.closest('.gtab'); if(!t) return;
+  const g = t.dataset.g;
+  document.querySelectorAll('.gtab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.gpanel').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');
+  document.querySelector(`[data-p="${g}"]`).classList.add('on');
+});
+
+/* helpers */
+function scoreImplied(h, a){
+  if(h > a) return '1';
+  if(a > h) return '2';
+  return 'X';
+}
+
+function syncPickFromScore(card){
+  const id = card.dataset.id;
+  const fields = card.querySelectorAll('.sc-field');
+  const hVal = fields[0].value;
+  const aVal = fields[1].value;
+
+  // Both fields must have a numeric value (including 0)
+  if(hVal === '' || aVal === '') return;
+  const h = parseInt(hVal);
+  const a = parseInt(aVal);
+  if(isNaN(h) || isNaN(a)) return;
+
+  const implied = scoreImplied(h, a);
+  const allBtns = card.querySelectorAll('.mbtn');
+  allBtns.forEach(b => b.classList.remove('on'));
+  const target = card.querySelector(`.mbtn[data-v="${implied}"]`);
+  if(target){
+    target.classList.add('on');
+    picks[id] = implied;
+    card.classList.add('picked');
+    updateProg();
+  }
+}
+
+/* MATCH BUTTONS */
+document.getElementById('matches').addEventListener('click', e => {
+  const btn = e.target.closest('.mbtn'); if(!btn) return;
+  const card = btn.closest('.mc');
+  const id = card.dataset.id;
+  const v = btn.dataset.v;
+  const allBtns = card.querySelectorAll('.mbtn');
+  const fields = card.querySelectorAll('.sc-field');
+  const hVal = fields[0].value;
+  const aVal = fields[1].value;
+
+  // If scores are filled and contradict the chosen button → clear scores
+  if(hVal !== '' && aVal !== ''){
+    const h = parseInt(hVal), a = parseInt(aVal);
+    if(!isNaN(h) && !isNaN(a) && scoreImplied(h, a) !== v){
+      fields[0].value = '';
+      fields[1].value = '';
+      fields[0].classList.add('err');
+      fields[1].classList.add('err');
+      setTimeout(()=>{ fields[0].classList.remove('err'); fields[1].classList.remove('err'); }, 1600);
+      toast('⚠️ Marcador borrado: contradecía el resultado elegido');
+    }
+  }
+
+  if(btn.classList.contains('on')){
+    btn.classList.remove('on');
+    delete picks[id];
+    card.classList.remove('picked');
+  } else {
+    allBtns.forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    picks[id] = v;
+    card.classList.add('picked');
+  }
+  updateProg();
+});
+
+/* SCORE INPUTS — sync pick on every keystroke AND on blur */
+function onScoreEvent(e){
+  const field = e.target.closest('.sc-field'); if(!field) return;
+  syncPickFromScore(field.closest('.mc'));
+}
+document.getElementById('matches').addEventListener('input',  onScoreEvent);
+document.getElementById('matches').addEventListener('change', onScoreEvent);
+document.getElementById('matches').addEventListener('focusout', onScoreEvent);
+
+function updateProg(){
+  const n = Object.keys(picks).length;
+  document.getElementById('pCount').textContent = n + ' / ' + TOTAL;
+  document.getElementById('pFill').style.width = (n/TOTAL*100)+'%';
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3400);
+}
+
+function sendWA(){
+  const id_p = document.getElementById('fid').value.trim();
+  const nom  = document.getElementById('fnombre').value.trim();
+  const ape  = document.getElementById('fapellido').value.trim();
+  const tel  = document.getElementById('ftel').value.trim();
+
+  let ok = true;
+  ['fid','fnombre','fapellido','ftel'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el.value.trim()){ el.classList.add('err'); ok=false; }
+    else el.classList.remove('err');
+  });
+  if(!ok){ toast('⚠️ Completa todos los campos del registro'); return; }
+
+  const n = Object.keys(picks).length;
+  if(n < TOTAL){ toast(`⚽ Faltan ${TOTAL-n} partido(s) por seleccionar`); return; }
+
+  let msg = `*GOLNER - Quiniela Semana 2*\n`;
+  msg += `Mundial 2026 - 24 partidos - 18 al 23 de Junio\n\n`;
+  msg += `ID Golner: *${id_p}*\n`;
+  msg += `Nombre: *${nom} ${ape}*\n`;
+  msg += `Telefono: ${tel}\n\n`;
+  msg += `----------------------------------\n`;
+  msg += `        MIS PREDICCIONES\n`;
+  msg += `----------------------------------\n`;
+
+  let curDay='';
+  mdata.forEach((m,i)=>{
+    if(m.day!==curDay){ curDay=m.day; msg+=`\n*${m.day}*\n`; }
+    const p = picks[m.id]||'—';
+    const winner = p==='1' ? m.home : p==='2' ? m.away : 'Empate';
+    const card = document.querySelector(`.mc[data-id="${m.id}"]`);
+    const f = card.querySelectorAll('.sc-field');
+    const h = f[0].value !== '' ? f[0].value : '0';
+    const a = f[1].value !== '' ? f[1].value : '0';
+    const sc = `${h}-${a}`;
+    const num = String(i+1).padStart(2,'0');
+    msg += `${num}. ${m.home} vs ${m.away}\n`;
+    msg += `    Gana: *${winner}* | Marcador: *${sc}*\n`;
+  });
+
+  msg += `\n----------------------------------\n`;
+  msg += `Enviado desde GOLNER`;
+
+  window.open(`https://wa.me/525625298380?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+['fid','fnombre','fapellido','ftel'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',function(){ this.classList.remove('err'); });
+});
+</script>
+</body>
+</html>
